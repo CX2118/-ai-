@@ -35,4 +35,4 @@ AI 生成图片分享平台
 
 ## 访问地址
 
-https://cx2118.github.io/-ai-/
+[CX2118官方网站](https://cx2118.cn/open/photo.html)
