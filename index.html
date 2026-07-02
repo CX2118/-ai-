@@ -9,21 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --bg: #f8f8fa;
-            --surface: rgba(255,255,255,0.65);
-            --surface-strong: rgba(255,255,255,0.78);
-            --glass-border: rgba(255,255,255,0.55);
-            --text: #0a0a0a;
-            --text-secondary: #6e6e73;
-            --text-tertiary: #aeaeb2;
-            --ease-expo: cubic-bezier(0.16,1,0.3,1);
-            --ease-quart: cubic-bezier(0.25,1,0.5,1);
-            --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            --font-accent: 'Syne', 'DM Sans', sans-serif;
-            --nav-h: 72px;
-            --cw: 1180px;
-        }
+        :root { --bg: #f8f8fa; --surface: rgba(255,255,255,0.65); --surface-strong: rgba(255,255,255,0.78); --glass-border: rgba(255,255,255,0.55); --text: #0a0a0a; --text-secondary: #6e6e73; --text-tertiary: #aeaeb2; --ease-expo: cubic-bezier(0.16,1,0.3,1); --ease-quart: cubic-bezier(0.25,1,0.5,1); --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; --font-accent: 'Syne', 'DM Sans', sans-serif; --nav-h: 72px; --cw: 1180px; }
         html { scroll-behavior: smooth; }
         body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
         body::after { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 180px; opacity: 0.022; pointer-events: none; z-index: 9999; }
@@ -92,21 +78,8 @@
         .footer { text-align: center; padding: 3rem 2rem; color: var(--text-tertiary); font-size: 0.85rem; }
         .footer a { color: var(--text-secondary); text-decoration: none; }
         .footer a:hover { color: var(--text); }
-        @media (prefers-color-scheme: dark) {
-            :root { --bg: #111113; --surface: rgba(30,30,34,0.72); --surface-strong: rgba(30,30,34,0.82); --glass-border: rgba(255,255,255,0.08); --text: #f0f0f2; --text-secondary: #a0a0a6; --text-tertiary: #5c5c62; }
-            .card:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.15); }
-            .nav-link:hover { background: rgba(255,255,255,0.06); }
-            .expanded-close:hover { background: rgba(255,255,255,0.1); }
-            .expanded-gallery img { background: rgba(255,255,255,0.04); }
-        }
-        @media (max-width: 768px) {
-            :root { --nav-h: 56px; }
-            .nav-inner { padding: 0 1rem; }
-            .nav-links { display: none; }
-            .cards-grid { grid-template-columns: 1fr; }
-            .expanded-panel { width: 100vw; }
-            .expanded-gallery { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.5rem; padding: 0.8rem; }
-        }
+        @media (prefers-color-scheme: dark) { :root { --bg: #111113; --surface: rgba(30,30,34,0.72); --surface-strong: rgba(30,30,34,0.82); --glass-border: rgba(255,255,255,0.08); --text: #f0f0f2; --text-secondary: #a0a0a6; --text-tertiary: #5c5c62; } .card:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.15); } .nav-link:hover { background: rgba(255,255,255,0.06); } .expanded-close:hover { background: rgba(255,255,255,0.1); } .expanded-gallery img { background: rgba(255,255,255,0.04); } }
+        @media (max-width: 768px) { :root { --nav-h: 56px; } .nav-inner { padding: 0 1rem; } .nav-links { display: none; } .cards-grid { grid-template-columns: 1fr; } .expanded-panel { width: 100vw; } .expanded-gallery { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.5rem; padding: 0.8rem; } }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
     </style>
 </head>
@@ -163,44 +136,58 @@
     <script>
     const REPO = 'CX2118/-ai-';
     const BRANCH = 'main';
-    const API = `https://api.github.com/repos/${REPO}/contents`;
     const MIRROR = 'https://gh-proxy.com/https://github.com';
+    const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
     const $ = s => document.querySelector(s);
     const enc = s => encodeURIComponent(s);
 
     const imgSrc = (folder, name) => `${MIRROR}/${REPO}/raw/${BRANCH}/${enc(folder)}/${enc(name)}`;
-    const imgRaw = (folder, name) => `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${enc(folder)}/${enc(name)}`;
+    const imgRaw = (folder, name) => `${RAW}/${enc(folder)}/${enc(name)}`;
 
     window.addEventListener('scroll', () => $('#navbar').classList.toggle('scrolled', window.scrollY > 20));
 
-    async function apiGet(path) {
-        const urls = [`${API}/${enc(path)}`, `${MIRROR}/${REPO}/contents/${enc(path)}`];
-        for (const url of urls) {
-            try { const r = await fetch(url); if (r.ok) return await r.json(); } catch(e) {}
+    // 读取 photo.md，解析出文件夹名和描述
+    async function fetchRootPhoto() {
+        const r = await fetch(`${MIRROR}/${REPO}/raw/${BRANCH}/photo.md`);
+        if (!r.ok) throw new Error('root photo.md not found');
+        const text = await r.text();
+        const cards = [];
+        const lines = text.split('\n');
+        let current = null;
+        for (const line of lines) {
+            const h2 = line.match(/^## (.+)$/);
+            if (h2) {
+                current = { name: h2[1].trim(), folder: h2[1].trim(), desc: '' };
+                cards.push(current);
+            } else if (current && line.trim() && !line.startsWith('#')) {
+                current.desc = line.trim();
+            }
         }
-        throw new Error('API failed');
+        return cards;
     }
 
-    async function fetchMd(folder) {
+    // 读取某个文件夹的 photo.md 获取描述
+    async function fetchFolderDesc(folder) {
         try {
-            const items = await apiGet(folder);
-            const md = items.find(f => f.name.endsWith('.md'));
-            if (!md) return '';
-            const url = `${MIRROR}/${REPO}/raw/${BRANCH}/${enc(folder)}/${enc(md.name)}`;
-            const r = await fetch(url);
-            return r.ok ? (await r.text()).trim() : '';
+            const r = await fetch(`${MIRROR}/${REPO}/raw/${BRANCH}/${enc(folder)}/photo.md`);
+            if (!r.ok) return '';
+            return (await r.text()).trim();
         } catch(e) { return ''; }
     }
 
+    // 通过 API 获取文件夹内图片列表
     async function fetchImages(folder) {
-        const items = await apiGet(folder);
-        return items.filter(f => /\.(png|jpg|jpeg|gif|webp)$/i.test(f.name)).map(f => f.name);
+        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${enc(folder)}`);
+        if (!r.ok) return [];
+        const data = await r.json();
+        return data.filter(f => /\.(png|jpg|jpeg|gif|webp)$/i.test(f.name)).map(f => f.name);
     }
 
     function renderCards(data) {
         const grid = $('#cardsGrid');
         grid.innerHTML = '';
         data.forEach((item, i) => {
+            if (!item.images.length) return;
             const card = document.createElement('div');
             card.className = 'card';
             card.style.animationDelay = `${i * 0.1}s`;
@@ -280,15 +267,12 @@
     async function init() {
         const grid = $('#cardsGrid');
         try {
-            const root = await apiGet('');
-            const folders = root.filter(f => f.type === 'dir');
-            if (!folders.length) { grid.innerHTML = '<div class="loading">暂无内容</div>'; return; }
-            const data = [];
-            for (const f of folders) {
-                const [images, desc] = await Promise.all([fetchImages(f.name), fetchMd(f.name)]);
-                if (images.length) data.push({ name: f.name, folder: f.name, desc, images });
+            const cards = await fetchRootPhoto();
+            for (const card of cards) {
+                card.images = await fetchImages(card.folder);
+                if (!card.desc) card.desc = await fetchFolderDesc(card.folder);
             }
-            renderCards(data);
+            renderCards(cards);
         } catch(e) {
             grid.innerHTML = '<div class="loading">加载失败，请刷新重试</div>';
         }
