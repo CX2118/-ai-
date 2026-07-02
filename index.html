@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CX2118 AI Gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #f8f8fa;
+            --surface: rgba(255,255,255,0.65);
+            --surface-strong: rgba(255,255,255,0.78);
+            --glass-border: rgba(255,255,255,0.55);
+            --text: #0a0a0a;
+            --text-secondary: #6e6e73;
+            --text-tertiary: #aeaeb2;
+            --ease-expo: cubic-bezier(0.16,1,0.3,1);
+            --ease-quart: cubic-bezier(0.25,1,0.5,1);
+            --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-accent: 'Syne', 'DM Sans', sans-serif;
+            --nav-h: 72px;
+            --cw: 1180px;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        body::after { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 180px; opacity: 0.022; pointer-events: none; z-index: 9999; }
+        .navbar { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); z-index: 1000; transition: background 0.35s var(--ease-quart), border-color 0.35s var(--ease-quart); border-bottom: 1px solid transparent; }
+        .navbar.scrolled { background: var(--surface-strong); backdrop-filter: saturate(180%) blur(24px); -webkit-backdrop-filter: saturate(180%) blur(24px); border-bottom-color: var(--glass-border); }
+        .nav-inner { max-width: var(--cw); margin: 0 auto; padding: 0 2rem; height: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .nav-logo { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; color: var(--text); }
+        .nav-logo img { width: 34px; height: 34px; border-radius: 10px; object-fit: cover; }
+        .nav-logo-text { font-weight: 700; font-size: 1.1rem; }
+        .nav-links { display: flex; gap: 0.5rem; }
+        .nav-link { padding: 0.5rem 1rem; font-size: 0.92rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; border-radius: 100px; transition: color 0.25s, background 0.25s; }
+        .nav-link:hover { color: var(--text); background: rgba(0,0,0,0.04); }
+        .hero { position: relative; min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: calc(var(--nav-h) + 3rem) 2rem 3rem; overflow: hidden; }
+        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.45; pointer-events: none; }
+        .orb-1 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(110,150,255,0.35) 0%, transparent 70%); top: -5%; right: -3%; }
+        .orb-2 { width: 320px; height: 320px; background: radial-gradient(circle, rgba(90,210,170,0.3) 0%, transparent 70%); bottom: 5%; left: -4%; }
+        .orb-3 { width: 280px; height: 280px; background: radial-gradient(circle, rgba(240,150,170,0.25) 0%, transparent 70%); top: 30%; left: 35%; }
+        .hero-content { position: relative; z-index: 2; text-align: center; max-width: 700px; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1.1rem; background: var(--surface); backdrop-filter: saturate(180%) blur(20px); border: 1px solid var(--glass-border); border-radius: 100px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.8s var(--ease-expo) 0.15s forwards; }
+        .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #34c759; }
+        .hero-title { font-family: var(--font-accent); font-weight: 800; font-size: clamp(2rem, 4.5vw, 3.2rem); line-height: 1.25; letter-spacing: -0.04em; margin-bottom: 1rem; opacity: 0; animation: fadeUp 0.9s var(--ease-expo) 0.3s forwards; }
+        .hero-sub { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7; opacity: 0; animation: fadeUp 0.8s var(--ease-expo) 0.5s forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); filter: blur(3px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+        .section { max-width: var(--cw); margin: 0 auto; padding: 2rem; }
+        .section-label { display: inline-block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 1rem; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+        .card { background: var(--surface); backdrop-filter: saturate(180%) blur(28px); border: 1px solid var(--glass-border); border-radius: 20px; overflow: hidden; cursor: pointer; transition: transform 0.4s var(--ease-expo), box-shadow 0.4s var(--ease-expo); opacity: 0; animation: fadeUp 0.7s var(--ease-expo) forwards; }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04); }
+        .card-cover { width: 100%; aspect-ratio: 16/10; object-fit: cover; background: rgba(0,0,0,0.04); }
+        .card-body { padding: 1.4rem 1.6rem 1.6rem; }
+        .card-title { font-family: var(--font-accent); font-weight: 700; font-size: 1.2rem; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+        .card-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; }
+        .card-count { display: inline-flex; align-items: center; gap: 0.3rem; margin-top: 0.8rem; font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary); }
+        .card-count svg { width: 14px; height: 14px; }
+        .expanded-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.35s var(--ease-quart), visibility 0.35s; }
+        .expanded-overlay.active { opacity: 1; visibility: visible; }
+        .expanded-panel { position: fixed; top: 0; right: 0; width: min(90vw, 900px); height: 100vh; background: var(--bg); z-index: 2001; transform: translateX(100%); transition: transform 0.45s var(--ease-expo); overflow-y: auto; overscroll-behavior: contain; }
+        .expanded-panel.active { transform: translateX(0); }
+        .expanded-header { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.6rem; background: var(--surface-strong); backdrop-filter: saturate(180%) blur(24px); border-bottom: 1px solid var(--glass-border); z-index: 10; }
+        .expanded-title { font-family: var(--font-accent); font-weight: 700; font-size: 1.3rem; }
+        .expanded-close { width: 36px; height: 36px; border: none; background: rgba(0,0,0,0.05); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .expanded-close:hover { background: rgba(0,0,0,0.1); }
+        .expanded-close svg { width: 18px; height: 18px; stroke: var(--text); stroke-width: 2; fill: none; }
+        .expanded-desc { padding: 1.2rem 1.6rem; font-size: 0.95rem; color: var(--text-secondary); border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .expanded-gallery { padding: 1.2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.8rem; }
+        .expanded-gallery img { width: 100%; border-radius: 12px; cursor: pointer; transition: transform 0.3s var(--ease-expo), box-shadow 0.3s; background: rgba(0,0,0,0.04); }
+        .expanded-gallery img:hover { transform: scale(1.02); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+        .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 3000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; cursor: zoom-out; }
+        .lightbox.active { opacity: 1; visibility: visible; }
+        .lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; transform: scale(0.9); transition: transform 0.35s var(--ease-expo); }
+        .lightbox.active img { transform: scale(1); }
+        .lightbox-close { position: absolute; top: 1.5rem; right: 1.5rem; width: 44px; height: 44px; border: none; background: rgba(255,255,255,0.1); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 10; }
+        .lightbox-close:hover { background: rgba(255,255,255,0.2); }
+        .lightbox-close svg { width: 20px; height: 20px; stroke: #fff; stroke-width: 2; fill: none; }
+        .lightbox-download { position: absolute; top: 1.5rem; right: 5rem; width: 44px; height: 44px; border: none; background: rgba(255,255,255,0.1); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; text-decoration: none; z-index: 10; }
+        .lightbox-download:hover { background: rgba(255,255,255,0.2); }
+        .lightbox-download svg { width: 20px; height: 20px; stroke: #fff; stroke-width: 2; fill: none; }
+        .img-download { position: absolute; bottom: 8px; right: 8px; width: 32px; height: 32px; border: none; background: rgba(0,0,0,0.5); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s, background 0.2s; text-decoration: none; z-index: 5; }
+        .img-wrapper:hover .img-download { opacity: 1; }
+        .img-download:hover { background: rgba(0,0,0,0.7); }
+        .img-download svg { width: 16px; height: 16px; stroke: #fff; stroke-width: 2; fill: none; }
+        .img-wrapper { position: relative; }
+        .loading { text-align: center; padding: 4rem 2rem; color: var(--text-tertiary); font-size: 0.95rem; }
+        .spinner { width: 32px; height: 32px; border: 3px solid rgba(0,0,0,0.08); border-top-color: var(--text); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .footer { text-align: center; padding: 3rem 2rem; color: var(--text-tertiary); font-size: 0.85rem; }
+        .footer a { color: var(--text-secondary); text-decoration: none; }
+        .footer a:hover { color: var(--text); }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg: #111113; --surface: rgba(30,30,34,0.72); --surface-strong: rgba(30,30,34,0.82); --glass-border: rgba(255,255,255,0.08); --text: #f0f0f2; --text-secondary: #a0a0a6; --text-tertiary: #5c5c62; }
+            .card:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.15); }
+            .nav-link:hover { background: rgba(255,255,255,0.06); }
+            .expanded-close:hover { background: rgba(255,255,255,0.1); }
+            .expanded-gallery img { background: rgba(255,255,255,0.04); }
+        }
+        @media (max-width: 768px) {
+            :root { --nav-h: 56px; }
+            .nav-inner { padding: 0 1rem; }
+            .nav-links { display: none; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .expanded-panel { width: 100vw; }
+            .expanded-gallery { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.5rem; padding: 0.8rem; }
+        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">
+                <img src="https://gh-proxy.com/https://github.com/114514cxiwuiwua/super-photos/raw/main/cx2118.jpg" alt="CX2118" onerror="this.style.display='none'">
+                <span class="nav-logo-text">CX2118</span>
+            </a>
+            <div class="nav-links">
+                <a href="https://github.com/CX2118/-ai-" class="nav-link" target="_blank">GitHub</a>
+                <a href="https://cx2118.cn" class="nav-link" target="_blank">主页</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="hero-content">
+            <div class="hero-badge"><span class="hero-badge-dot"></span>AI Gallery</div>
+            <h1 class="hero-title">AI 图片分享平台</h1>
+            <p class="hero-sub">由 AI 生成的图片合集，持续更新中</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-label">Collections</div>
+        <div class="cards-grid" id="cardsGrid">
+            <div class="loading"><div class="spinner"></div>加载中...</div>
+        </div>
+    </section>
+
+    <footer class="footer"><p>Powered by <a href="https://github.com/CX2118" target="_blank">CX2118</a></p></footer>
+
+    <div class="expanded-overlay" id="expandedOverlay"></div>
+    <div class="expanded-panel" id="expandedPanel">
+        <div class="expanded-header">
+            <span class="expanded-title" id="expandedTitle"></span>
+            <button class="expanded-close" id="expandedClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="expanded-desc" id="expandedDesc"></div>
+        <div class="expanded-gallery" id="expandedGallery"></div>
+    </div>
+
+    <div class="lightbox" id="lightbox">
+        <a class="lightbox-download" id="lightboxDownload" href="" download target="_blank"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+        <button class="lightbox-close" id="lightboxClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <img id="lightboxImg" src="" alt="">
+    </div>
+
+    <script>
+    const REPO = 'CX2118/-ai-';
+    const BRANCH = 'main';
+    const API = `https://api.github.com/repos/${REPO}/contents`;
+    const MIRROR = 'https://gh-proxy.com/https://github.com';
+    const $ = s => document.querySelector(s);
+    const enc = s => encodeURIComponent(s);
+
+    const imgSrc = (folder, name) => `${MIRROR}/${REPO}/raw/${BRANCH}/${enc(folder)}/${enc(name)}`;
+    const imgRaw = (folder, name) => `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${enc(folder)}/${enc(name)}`;
+
+    window.addEventListener('scroll', () => $('#navbar').classList.toggle('scrolled', window.scrollY > 20));
+
+    async function apiGet(path) {
+        const urls = [`${API}/${enc(path)}`, `${MIRROR}/${REPO}/contents/${enc(path)}`];
+        for (const url of urls) {
+            try { const r = await fetch(url); if (r.ok) return await r.json(); } catch(e) {}
+        }
+        throw new Error('API failed');
+    }
+
+    async function fetchMd(folder) {
+        try {
+            const items = await apiGet(folder);
+            const md = items.find(f => f.name.endsWith('.md'));
+            if (!md) return '';
+            const url = `${MIRROR}/${REPO}/raw/${BRANCH}/${enc(folder)}/${enc(md.name)}`;
+            const r = await fetch(url);
+            return r.ok ? (await r.text()).trim() : '';
+        } catch(e) { return ''; }
+    }
+
+    async function fetchImages(folder) {
+        const items = await apiGet(folder);
+        return items.filter(f => /\.(png|jpg|jpeg|gif|webp)$/i.test(f.name)).map(f => f.name);
+    }
+
+    function renderCards(data) {
+        const grid = $('#cardsGrid');
+        grid.innerHTML = '';
+        data.forEach((item, i) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.animationDelay = `${i * 0.1}s`;
+            card.innerHTML = `
+                <img class="card-cover" src="${imgSrc(item.folder, item.images[0])}" alt="${item.name}" loading="lazy" onerror="this.style.background='linear-gradient(135deg,#667eea,#764ba2)'">
+                <div class="card-body">
+                    <div class="card-title">${item.name}</div>
+                    <div class="card-desc">${item.desc || '暂无简介'}</div>
+                    <div class="card-count">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                        ${item.images.length} 张图片
+                    </div>
+                </div>`;
+            card.addEventListener('click', () => openPanel(item));
+            grid.appendChild(card);
+        });
+    }
+
+    function openPanel(item) {
+        $('#expandedTitle').textContent = item.name;
+        $('#expandedDesc').textContent = item.desc || '暂无简介';
+        const gallery = $('#expandedGallery');
+        gallery.innerHTML = '';
+        item.images.forEach(name => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'img-wrapper';
+            const el = document.createElement('img');
+            el.src = imgSrc(item.folder, name);
+            el.alt = name;
+            el.loading = 'lazy';
+            const dl = document.createElement('a');
+            dl.className = 'img-download';
+            dl.href = imgRaw(item.folder, name);
+            dl.download = name;
+            dl.target = '_blank';
+            dl.title = '下载';
+            dl.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+            dl.addEventListener('click', e => e.stopPropagation());
+            el.addEventListener('click', e => { e.stopPropagation(); openLightbox(el.src, imgRaw(item.folder, name), name); });
+            wrapper.appendChild(el);
+            wrapper.appendChild(dl);
+            gallery.appendChild(wrapper);
+        });
+        $('#expandedOverlay').classList.add('active');
+        $('#expandedPanel').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closePanel() {
+        $('#expandedOverlay').classList.remove('active');
+        $('#expandedPanel').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function openLightbox(src, dlUrl, name) {
+        $('#lightboxImg').src = src;
+        const dl = $('#lightboxDownload');
+        dl.href = dlUrl;
+        dl.download = name;
+        $('#lightbox').classList.add('active');
+    }
+
+    function closeLightbox() { $('#lightbox').classList.remove('active'); }
+
+    $('#expandedOverlay').addEventListener('click', closePanel);
+    $('#expandedClose').addEventListener('click', closePanel);
+    $('#lightbox').addEventListener('click', closeLightbox);
+    $('#lightboxClose').addEventListener('click', e => { e.stopPropagation(); closeLightbox(); });
+    $('#lightboxDownload').addEventListener('click', e => e.stopPropagation());
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            if ($('#lightbox').classList.contains('active')) closeLightbox();
+            else if ($('#expandedPanel').classList.contains('active')) closePanel();
+        }
+    });
+
+    async function init() {
+        const grid = $('#cardsGrid');
+        try {
+            const root = await apiGet('');
+            const folders = root.filter(f => f.type === 'dir');
+            if (!folders.length) { grid.innerHTML = '<div class="loading">暂无内容</div>'; return; }
+            const data = [];
+            for (const f of folders) {
+                const [images, desc] = await Promise.all([fetchImages(f.name), fetchMd(f.name)]);
+                if (images.length) data.push({ name: f.name, folder: f.name, desc, images });
+            }
+            renderCards(data);
+        } catch(e) {
+            grid.innerHTML = '<div class="loading">加载失败，请刷新重试</div>';
+        }
+    }
+
+    init();
+    </script>
+</body>
+</html>
