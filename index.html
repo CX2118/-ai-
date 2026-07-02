@@ -144,6 +144,20 @@
     const imgSrc = (folder, name) => `${MIRROR}/${REPO}/raw/${BRANCH}/${enc(folder)}/${enc(name)}`;
     const imgRaw = (folder, name) => `${RAW}/${enc(folder)}/${enc(name)}`;
 
+    async function downloadImage(url, filename) {
+        try {
+            const r = await fetch(url);
+            const blob = await r.blob();
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        } catch(e) {
+            window.open(url, '_blank');
+        }
+    }
+
     window.addEventListener('scroll', () => $('#navbar').classList.toggle('scrolled', window.scrollY > 20));
 
     // 读取 photo.md，解析出文件夹名和描述
@@ -220,12 +234,10 @@
             el.loading = 'lazy';
             const dl = document.createElement('a');
             dl.className = 'img-download';
-            dl.href = imgRaw(item.folder, name);
-            dl.download = name;
-            dl.target = '_blank';
+            dl.href = '#';
             dl.title = '下载';
             dl.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
-            dl.addEventListener('click', e => e.stopPropagation());
+            dl.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); downloadImage(imgRaw(item.folder, name), name); });
             el.addEventListener('click', e => { e.stopPropagation(); openLightbox(el.src, imgRaw(item.folder, name), name); });
             wrapper.appendChild(el);
             wrapper.appendChild(dl);
@@ -245,8 +257,7 @@
     function openLightbox(src, dlUrl, name) {
         $('#lightboxImg').src = src;
         const dl = $('#lightboxDownload');
-        dl.href = dlUrl;
-        dl.download = name;
+        dl.onclick = (e) => { e.stopPropagation(); downloadImage(dlUrl, name); };
         $('#lightbox').classList.add('active');
     }
 
