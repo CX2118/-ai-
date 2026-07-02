@@ -72,6 +72,20 @@
         .img-download:hover { background: rgba(0,0,0,0.7); }
         .img-download svg { width: 16px; height: 16px; stroke: #fff; stroke-width: 2; fill: none; }
         .img-wrapper { position: relative; }
+
+        /* SETTINGS */
+        .settings-btn { width: 40px; height: 40px; border: none; background: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: background 0.25s, color 0.25s, transform 0.35s var(--ease-expo); }
+        .settings-btn:hover { background: rgba(0,0,0,0.04); color: var(--text); }
+        .settings-btn svg { width: 20px; height: 20px; }
+        .settings-panel { position: fixed; top: calc(var(--nav-h) + 8px); right: 2rem; width: 260px; padding: 0.6rem; background: var(--surface-strong); backdrop-filter: saturate(200%) blur(40px); border: 1px solid var(--glass-border-strong); border-radius: 18px; box-shadow: 0 16px 48px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.04); z-index: 1001; opacity: 0; visibility: hidden; transform: translateY(-6px) scale(0.97); transition: opacity 0.28s var(--ease-quart), visibility 0.28s, transform 0.3s var(--ease-expo); }
+        .settings-panel.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .settings-title { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); padding: 0.6rem 0.8rem 0.5rem; display: block; }
+        .settings-item { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.8rem; border-radius: 12px; transition: background 0.2s; cursor: default; }
+        .settings-item:hover { background: rgba(0,0,0,0.03); }
+        .settings-label { font-size: 0.88rem; font-weight: 500; color: var(--text); }
+        .mirror-select { width: 100%; padding: 0.45rem 0.7rem; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; font-size: 0.82rem; font-family: var(--font-body); font-weight: 500; color: var(--text); background-color: rgba(0,0,0,0.025); appearance: none; cursor: pointer; outline: none; }
+        @media (prefers-color-scheme: dark) { .settings-item:hover { background: rgba(255,255,255,0.04); } .settings-btn:hover { background: rgba(255,255,255,0.06); } .mirror-select { background-color: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); } }
+
         .loading { text-align: center; padding: 4rem 2rem; color: var(--text-tertiary); font-size: 0.95rem; }
         .spinner { width: 32px; height: 32px; border: 3px solid rgba(0,0,0,0.08); border-top-color: var(--text); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -87,15 +101,29 @@
     <nav class="navbar" id="navbar">
         <div class="nav-inner">
             <a href="/" class="nav-logo">
-                <img src="https://gh-proxy.com/https://github.com/114514cxiwuiwua/super-photos/raw/main/cx2118.jpg" alt="CX2118" onerror="this.style.display='none'">
+                <img src="${MIRROR}/114514cxiwuiwua/super-photos/raw/main/cx2118.jpg" alt="CX2118" onerror="this.style.display='none'">
                 <span class="nav-logo-text">CX2118</span>
             </a>
             <div class="nav-links">
                 <a href="https://github.com/CX2118/-ai-" class="nav-link" target="_blank">GitHub</a>
                 <a href="https://cx2118.cn" class="nav-link" target="_blank">主页</a>
+                <button class="settings-btn" id="settingsBtn" title="设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
             </div>
         </div>
     </nav>
+
+    <div class="settings-panel" id="settingsPanel">
+        <span class="settings-title">设置</span>
+        <div class="settings-item">
+            <span class="settings-label">镜像源</span>
+        </div>
+        <div class="settings-item">
+            <select class="mirror-select" id="mirrorSelect">
+                <option value="https://gh-proxy.com/https://github.com">gh-proxy.com</option>
+                <option value="https://ghproxy.net/https://github.com">ghproxy.net</option>
+            </select>
+        </div>
+    </div>
 
     <section class="hero">
         <div class="orb orb-1"></div>
@@ -136,65 +164,105 @@
     <script>
     const REPO = 'CX2118/-ai-';
     const BRANCH = 'main';
-    const MIRROR = 'https://gh-proxy.com/https://github.com';
     const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
     const $ = s => document.querySelector(s);
     const enc = s => encodeURIComponent(s);
 
-    const imgSrc = (folder, name) => `${MIRROR}/${REPO}/raw/${BRANCH}/${enc(folder)}/${enc(name)}`;
-    const imgRaw = (folder, name) => `${RAW}/${enc(folder)}/${enc(name)}`;
+    let MIRROR = localStorage.getItem('mirror') || 'https://gh-proxy.com/https://github.com';
 
-    async function downloadImage(url, filename) {
-        try {
-            const r = await fetch(url);
-            const blob = await r.blob();
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(a.href);
-        } catch(e) {
-            window.open(url, '_blank');
-        }
+    const imgSrc = (folder, name) => `${MIRROR}/${REPO}/raw/${BRANCH}/${enc(folder)}/${enc(name)}`;
+    const imgRaw = (folder, name) => imgSrc(folder, name);
+
+    function downloadImage(url, filename) {
+        window.open(url, '_blank');
     }
+
+    // Settings
+    const settingsBtn = $('#settingsBtn');
+    const settingsPanel = $('#settingsPanel');
+    const mirrorSelect = $('#mirrorSelect');
+
+    mirrorSelect.value = MIRROR;
+    mirrorSelect.addEventListener('change', (e) => {
+        MIRROR = e.target.value;
+        localStorage.setItem('mirror', MIRROR);
+        location.reload();
+    });
+
+    settingsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        settingsPanel.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!settingsPanel.contains(e.target) && e.target !== settingsBtn) {
+            settingsPanel.classList.remove('active');
+        }
+    });
 
     window.addEventListener('scroll', () => $('#navbar').classList.toggle('scrolled', window.scrollY > 20));
 
     // 读取 photo.md，解析出文件夹名和描述
     async function fetchRootPhoto() {
-        const r = await fetch(`${MIRROR}/${REPO}/raw/${BRANCH}/photo.md`);
-        if (!r.ok) throw new Error('root photo.md not found');
-        const text = await r.text();
-        const cards = [];
-        const lines = text.split('\n');
-        let current = null;
-        for (const line of lines) {
-            const h2 = line.match(/^## (.+)$/);
-            if (h2) {
-                current = { name: h2[1].trim(), folder: h2[1].trim(), desc: '' };
-                cards.push(current);
-            } else if (current && line.trim() && !line.startsWith('#')) {
-                current.desc = line.trim();
-            }
+        const urls = [
+            `${MIRROR}/${REPO}/raw/${BRANCH}/photo.md`,
+            `${RAW}/photo.md`
+        ];
+        for (const url of urls) {
+            try {
+                const r = await fetch(url);
+                if (r.ok) {
+                    const text = await r.text();
+                    const cards = [];
+                    const lines = text.split('\n');
+                    let current = null;
+                    for (const line of lines) {
+                        const h2 = line.match(/^## (.+)$/);
+                        if (h2) {
+                            current = { name: h2[1].trim(), folder: h2[1].trim(), desc: '' };
+                            cards.push(current);
+                        } else if (current && line.trim() && !line.startsWith('#')) {
+                            current.desc = line.trim();
+                        }
+                    }
+                    return cards;
+                }
+            } catch(e) {}
         }
-        return cards;
+        throw new Error('root photo.md not found');
     }
 
     // 读取某个文件夹的 photo.md 获取描述
     async function fetchFolderDesc(folder) {
-        try {
-            const r = await fetch(`${MIRROR}/${REPO}/raw/${BRANCH}/${enc(folder)}/photo.md`);
-            if (!r.ok) return '';
-            return (await r.text()).trim();
-        } catch(e) { return ''; }
+        const urls = [
+            `${MIRROR}/${REPO}/raw/${BRANCH}/${enc(folder)}/photo.md`,
+            `${RAW}/${enc(folder)}/photo.md`
+        ];
+        for (const url of urls) {
+            try {
+                const r = await fetch(url);
+                if (r.ok) return (await r.text()).trim();
+            } catch(e) {}
+        }
+        return '';
     }
 
     // 通过 API 获取文件夹内图片列表
     async function fetchImages(folder) {
-        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${enc(folder)}`);
-        if (!r.ok) return [];
-        const data = await r.json();
-        return data.filter(f => /\.(png|jpg|jpeg|gif|webp)$/i.test(f.name)).map(f => f.name);
+        const urls = [
+            `https://api.github.com/repos/${REPO}/contents/${enc(folder)}`,
+            `${MIRROR}/repos/${REPO}/contents/${enc(folder)}`
+        ];
+        for (const url of urls) {
+            try {
+                const r = await fetch(url);
+                if (r.ok) {
+                    const data = await r.json();
+                    return data.filter(f => /\.(png|jpg|jpeg|gif|webp)$/i.test(f.name)).map(f => f.name);
+                }
+            } catch(e) {}
+        }
+        return [];
     }
 
     function renderCards(data) {
