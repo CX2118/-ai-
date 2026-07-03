@@ -250,17 +250,25 @@
     // 通过 API 获取文件夹内图片列表
     async function fetchImages(folder) {
         const urls = [
-            `https://api.github.com/repos/${REPO}/contents/${enc(folder)}`,
-            `${MIRROR}/repos/${REPO}/contents/${enc(folder)}`
+            `${MIRROR}/repos/${REPO}/contents/${enc(folder)}`,
+            `https://api.github.com/repos/${REPO}/contents/${enc(folder)}`
         ];
         for (const url of urls) {
-            try {
-                const r = await fetch(url);
-                if (r.ok) {
-                    const data = await r.json();
-                    return data.filter(f => /\.(png|jpg|jpeg|gif|webp)$/i.test(f.name)).map(f => f.name);
+            for (let retry = 0; retry < 2; retry++) {
+                try {
+                    const controller = new AbortController();
+                    const timeout = setTimeout(() => controller.abort(), 8000);
+                    const r = await fetch(url, { signal: controller.signal });
+                    clearTimeout(timeout);
+                    if (r.ok) {
+                        const data = await r.json();
+                        return data.filter(f => /\.(png|jpg|jpeg|gif|webp)$/i.test(f.name)).map(f => f.name);
+                    }
+                    if (r.status === 403) await new Promise(r => setTimeout(r, 2000));
+                } catch(e) {
+                    await new Promise(r => setTimeout(r, 1000));
                 }
-            } catch(e) {}
+            }
         }
         return [];
     }
@@ -347,10 +355,15 @@
         const grid = $('#cardsGrid');
         try {
             const cards = await fetchRootPhoto();
-            for (const card of cards) {
-                card.images = await fetchImages(card.folder);
-                if (!card.desc) card.desc = await fetchFolderDesc(card.folder);
-            }
+            // 并行加载所有文件夹，单个失败不影响其他
+            await Promise.allSettled(cards.map(async (card) => {
+                try {
+                    card.images = await fetchImages(card.folder);
+                    if (!card.desc) card.desc = await fetchFolderDesc(card.folder);
+                } catch(e) {
+                    card.images = [];
+                }
+            }));
             renderCards(cards);
         } catch(e) {
             grid.innerHTML = '<div class="loading">加载失败，请刷新重试</div>';
